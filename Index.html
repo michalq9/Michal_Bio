@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 300px;
+      margin: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      position: relative;
+    }
+    .delete-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  let names = [];
+
+  function setup() {
+    createCanvas(400, 400);
+
+    // Input field for adding names
+    input = createInput();
+    input.position(20, height + 20);
+
+    // Add button to add names
+    addButton = createButton('Add Name');
+    addButton.position(input.x + input.width, height + 20);
+    addButton.mousePressed(addName);
+
+    // Create initial table
+    createTable();
+  }
+
+  function draw() {
+    background(220);
+  }
+
+  function addName() {
+    let name = input.value();
+    if (name !== '') {
+      names.push(name);
+      createTable();
+      input.value('');
+    }
+  }
+
+  function createTable() {
+    // Clear existing table
+    selectAll('tr').forEach(tr => tr.remove());
+
+    // Create new table
+    let table = createElement('table');
+    table.position(20, 20);
+
+    // Create table header
+    let header = createElement('tr');
+    let th = createElement('th', 'Melden');
+    header.child(th);
+    table.child(header);
+
+    // Create table rows
+    for (let i = names.length - 1; i >= 0; i--) {
+      let row = createElement('tr');
+
+      // Create delete button for each name
+      let deleteButton = createElement('button', 'Delete');
+      deleteButton.class('delete-button');
+      deleteButton.mousePressed(() => deleteName(i));
+
+      let td = createElement('td', names[i]);
+      td.child(deleteButton);
+
+      // Change background color on hover
+      td.style('cursor', 'pointer');
+      td.mouseOver(() => deleteButton.style('opacity', '1'));
+      td.mouseOut(() => deleteButton.style('opacity', '0'));
+
+      row.child(td);
+      table.child(row);
+    }
+  }
+
+  function deleteName(index) {
+    names.splice(index, 1);
+    createTable();
+  }
+</script>
+
+</body>
+</html>
